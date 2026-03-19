@@ -1,0 +1,34 @@
+name: pratique exam CICD
+on: [push]
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - uses: actions/checkout@v3
+      - name: cml_run
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+        run: |
+          # Workflow goes here
+           
+          python main.py
+          # Write your CML report
+          echo "## Message:" >> report.md
+          cat sortie.txt >> report.md
+
+
+          #cml-send-comment metrics.txt 
+          #cml-send-comment report.md
+          git config --global user.email "fjusline@gmail.com"
+          git config --global user.name "jusy"
+          git add report.md sortie.txt
+          git commit -m "pousser vers github repository"
+          git push origin HEAD:main
+
